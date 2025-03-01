@@ -18,8 +18,33 @@ public class ItemsServiceImpl implements ItemsService {
     @Override
     public List<String> getAllItems() {
         List<ItemEntity> itemEntities = itemsRepository.findAll();
-        if(!itemEntities.isEmpty())
-           return itemEntities.stream().map(ItemEntity::getItemName).collect(Collectors.toList());
+        if (!itemEntities.isEmpty())
+            return itemEntities.stream().map(ItemEntity::getItemName).collect(Collectors.toList());
         return List.of();
     }
+
+    @Override
+    public ItemEntity getOrCreateItem(String item) {
+        if(itemsRepository.existsByItemName(item))
+            return itemsRepository.findByItemName(item);
+        else
+           return itemsRepository.save(new ItemEntity(item));
+    }
+
+    @Override
+    public List<Long> getItemsIdByName(List<String> items) {
+        return itemsRepository.findIdByItemNameIn(items);
+    }
+
+
+//    public List<ItemEntity> getItemEntities(List<String> itemNames) {
+//        List<ItemEntity> existingItems = itemsRepository.findByItemNameIn(itemNames);
+//
+//        Set<String> missingItems = itemNames.stream().filter(item -> existingItems.stream()
+//                .map(ItemEntity::getItemName).collect(Collectors.toSet())
+//                .contains(item)).collect(Collectors.toSet());
+//
+//        itemsRepository.save(missingItems);
+//
+//    }
 }

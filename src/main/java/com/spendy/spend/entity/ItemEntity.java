@@ -14,6 +14,13 @@ public class ItemEntity {
     @Column(name = "item_name")
     private String itemName;
 
+    public ItemEntity() {
+    }
+
+    public ItemEntity(String item) {
+        this.itemName = item;
+    }
+
     public String getItemName() {
         return itemName;
     }

@@ -1,6 +1,8 @@
 package com.spendy.spend.controller;
 
+import com.spendy.spend.dto.SpendsOfDayRequest;
 import com.spendy.spend.dto.TotalSpend;
+import com.spendy.spend.entity.SpendsOfDay;
 import com.spendy.spend.service.SpendCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,11 +19,25 @@ public class SpendController {
     @Autowired
     private SpendCalculator spendCalculator;
 
-    @GetMapping("/total-spend")
-    public ResponseEntity<TotalSpend> getAllSpendsForDateRange(@RequestParam(required = false) LocalDate startDate,
+    @PostMapping("/total-spend")
+    public ResponseEntity<TotalSpend> getTotalSpendForDateRange(@RequestParam(required = false) LocalDate startDate,
                                                                @RequestParam(required = false) LocalDate endDate,
                                                                @RequestBody List<String> items){
-        TotalSpend totalSpend = spendCalculator.getAllSpendsForDateRange(startDate, endDate, items);
+        TotalSpend totalSpend = spendCalculator.getTotalSpendForDateRange(startDate, endDate, items);
         return new ResponseEntity<>(totalSpend, HttpStatus.OK);
+    }
+
+    @PostMapping("/all-spends")
+    public ResponseEntity<List<SpendsOfDayRequest>> getAllSpendsForDateRange(@RequestParam(required = false) LocalDate startDate,
+                                                               @RequestParam(required = false) LocalDate endDate,
+                                                               @RequestBody List<String> items){
+        List<SpendsOfDayRequest> spendsOfDayRequest = spendCalculator.getAllSpendsForDateRange(startDate, endDate, items);
+        return new ResponseEntity<>(spendsOfDayRequest, HttpStatus.OK);
+    }
+
+    @PostMapping("/save-spend")
+    public ResponseEntity<List<SpendsOfDay>> saveSpendsOfDay(@RequestBody List<SpendsOfDayRequest> spendsOfDayRequests){
+        return new ResponseEntity<>(spendCalculator.saveSpendsOfDay(spendsOfDayRequests), HttpStatus.OK);
+
     }
 }
